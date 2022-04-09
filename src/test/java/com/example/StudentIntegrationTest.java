@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -71,6 +72,26 @@ public class StudentIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Madara"))
                 .andExpect(jsonPath("$.address").value("Konohagakure"))
+                .andReturn();
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+        Student student = new Student();
+        student.setName("Madara");
+        student.setAddress("Konohagakure");
+
+        studentRepository.save(student);
+
+        String tempId = studentRepository.findAll().get(0).getId();
+
+        this.mockMvc
+                .perform(delete("/student")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("id", tempId)
+                )
+                .andExpect(status().isOk())
                 .andReturn();
     }
 }
