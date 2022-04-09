@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +32,9 @@ public class StudentIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper; //we will use this later to convert the Student object to a json string
 
+    @Autowired
+    private StudentRepository studentRepository;
+
     @Test
     public void saveTest() throws Exception {
         Student student = new Student();
@@ -47,6 +51,26 @@ public class StudentIntegrationTest {
                 .andExpect(jsonPath("$.name").value("Uzumaki Naruto"))
                 .andExpect(jsonPath("$.address").value("Konohagakure"))
                 .andExpect(jsonPath("$.id").isNotEmpty())
+                .andReturn();
+    }
+
+    @Test
+    public void findByNameTest() throws Exception {
+        Student student = new Student();
+        student.setName("Madara");
+        student.setAddress("Konohagakure");
+
+        studentRepository.save(student);
+
+        this.mockMvc
+                .perform(get("/student")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("name", "Madara")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Madara"))
+                .andExpect(jsonPath("$.address").value("Konohagakure"))
                 .andReturn();
     }
 }
