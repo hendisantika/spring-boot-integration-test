@@ -6,10 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
+
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = {SpringBootIntegrationTestApplicationTests.Initializer.class})
@@ -47,5 +54,16 @@ class SpringBootIntegrationTestApplicationTests {
                 .body("size()", is(6))
                 .body("[0].firstName", equalTo("First"))
                 .body("[0].lastName", equalTo("Last"));
+    }
+
+    static class Initializer
+            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            TestPropertyValues.of(
+                    "spring.datasource.url=" + postgres.getJdbcUrl(),
+                    "spring.datasource.username=" + postgres.getUsername(),
+                    "spring.datasource.password=" + postgres.getPassword()
+            ).applyTo(configurableApplicationContext.getEnvironment());
+        }
     }
 }
