@@ -27,4 +27,9 @@ public class StudentServiceImpl implements StudentService {
     public Student findByName(String name) {
         return studentRepository.findByName(name);
     }
+
+    @Override
+    public void delete(String id) {
+        studentRepository.delete(id);
+    }
 }
