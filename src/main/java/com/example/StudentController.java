@@ -2,6 +2,7 @@ package com.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,5 +35,11 @@ public class StudentController {
     @ResponseBody
     public Student findByName(@RequestParam String name) {
         return studentService.findByName(name);
+    }
+
+    @DeleteMapping(value = {"/student"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseBody
+    public void delete(@RequestParam String id) {
+        studentService.delete(id);
     }
 }
