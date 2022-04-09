@@ -17,4 +17,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Override
+    public Student save(Student student) {
+        return studentRepository.save(student);
+    }
 }
