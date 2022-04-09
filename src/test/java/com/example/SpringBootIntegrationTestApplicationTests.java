@@ -37,4 +37,15 @@ class SpringBootIntegrationTestApplicationTests {
         Assertions.assertThat(all.get(0).getFirstName()).isEqualTo("First");
         Assertions.assertThat(all.get(0).getLastName()).isEqualTo("Last");
     }
+
+    @Test
+    public void testGet_returns_200_with_expected_employees() {
+        when().
+                get(baseUrl + "/employees").
+                then()
+                .statusCode(200)
+                .body("size()", is(6))
+                .body("[0].firstName", equalTo("First"))
+                .body("[0].lastName", equalTo("Last"));
+    }
 }
