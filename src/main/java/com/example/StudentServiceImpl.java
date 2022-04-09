@@ -30,6 +30,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void delete(String id) {
-        studentRepository.delete(id);
+        studentRepository.deleteById(id);
     }
 }
